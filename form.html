@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Formulário · Olmeda</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #37254c;
+    --primary-hover: #5c4478;
+    --lilac: #CFC1E8;
+    --cream: #f4e6bb;
+    --offwhite: #f5f1ea;
+    --lightgray: #e9e7e4;
+    --dark: #1a1520;
+    --white: #ffffff;
+    --success: #4a9d6f;
+    --warning: #d4a574;
+    --critical: #c23b22;
+    --neutral: #999999;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--offwhite);
+    color: var(--dark);
+    min-height: 100vh;
+    padding: 0 0 60px;
+    padding-top: max(0px, env(safe-area-inset-top));
+    padding-bottom: max(60px, env(safe-area-inset-bottom));
+  }
+
+  .header {
+    background: var(--primary);
+    padding: 40px 24px 32px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 40px,
+      rgba(207,193,232,0.08) 40px,
+      rgba(207,193,232,0.08) 80px
+    );
+    pointer-events: none;
+  }
+  .header h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(28px, 8vw, 44px);
+    font-weight: 600;
+    color: var(--white);
+    position: relative;
+    z-index: 1;
+    margin-bottom: 8px;
+  }
+  .header p {
+    font-size: clamp(13px, 3.5vw, 16px);
+    color: var(--lilac);
+    position: relative;
+    z-index: 1;
+  }
+
+  .container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 32px 16px;
+  }
+
+  .loading {
+    text-align: center;
+    padding: 40px;
+    color: var(--neutral);
+  }
+  .loading-spinner {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--lilac);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-bottom: 16px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .form-group {
+    background: var(--white);
+    border: 1px solid var(--lightgray);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+
+  label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--primary);
+    margin-bottom: 8px;
+  }
+  label .required {
+    color: var(--critical);
+    margin-left: 4px;
+  }
+
+  input[type="text"],
+  input[type="password"],
+  input[type="email"],
+  input[type="tel"],
+  textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--lightgray);
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+    background: var(--white);
+    color: var(--dark);
+    transition: border-color 0.15s;
+    margin-bottom: 8px;
+  }
+  input:focus,
+  textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+  }
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--neutral);
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 100px;
+  }
+
+  .file-upload {
+    border: 2px dashed var(--lightgray);
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: var(--offwhite);
+  }
+  .file-upload:hover {
+    border-color: var(--primary);
+    background: var(--lilac);
+  }
+  .file-upload input[type="file"] {
+    display: none;
+  }
+  .file-upload-hint {
+    font-size: 13px;
+    color: var(--neutral);
+  }
+
+  .files-list {
+    margin-top: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .file-item {
+    background: var(--offwhite);
+    border: 1px solid var(--lightgray);
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .file-item button {
+    background: none;
+    border: none;
+    color: var(--critical);
+    cursor: pointer;
+    font-size: 14px;
+    padding: 0;
+  }
+
+  .submit-section {
+    background: var(--white);
+    border: 1px solid var(--lightgray);
+    border-radius: 12px;
+    padding: 24px;
+    text-align: center;
+    margin-top: 32px;
+  }
+
+  .submit-btn {
+    width: 100%;
+    padding: 14px 32px;
+    border: none;
+    border-radius: 8px;
+    background: var(--primary);
+    color: var(--white);
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    min-height: 44px;
+  }
+  .submit-btn:hover { background: var(--primary-hover); transform: translateY(-1px); }
+  .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+  .status-message {
+    padding: 12px;
+    border-radius: 8px;
+    margin-top: 16px;
+    font-size: 13px;
+    display: none;
+  }
+  .status-message.success {
+    background: #D4EDDA;
+    color: var(--success);
+    display: block;
+  }
+  .status-message.error {
+    background: #F8D7DA;
+    color: var(--critical);
+    display: block;
+  }
+
+  .error-container {
+    background: #F8D7DA;
+    color: var(--critical);
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+  }
+
+  @media (max-width: 480px) {
+    .header { padding: 24px 16px 20px; }
+    .container { padding: 20px 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>📋 Formulário</h1>
+  <p id="formTitle">Carregando...</p>
+</div>
+
+<div class="container" id="content">
+  <div class="loading">
+    <div class="loading-spinner"></div>
+    <p>Carregando formulário...</p>
+  </div>
+</div>
+
+<script>
+const SHEET_ID = '1ffvH3er0Q5n8SSSBxS4AaYjti7vjh4Gxx6K2mt3t3Aw';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbydAqTi6LNtXnUswVyNpMfLfcOZhfoTT8nYU30ZRfwUuhRHAnuN3V4fHhpRfS4AAmzQ/exec';
+
+const params = new URLSearchParams(window.location.search);
+const formId = params.get('form') || 'passwords';
+const clientId = params.get('client') || 'brasil-te-ama';
+
+let formConfig = null;
+let formData = {};
+let fileData = {};
+
+async function loadFormConfig() {
+  try {
+    const response = await fetch(SCRIPT_URL + '?action=getFormConfig&form=' + formId + '&client=' + clientId);
+    const result = await response.json();
+
+    if (!result.success) {
+      showError(result.error || 'Erro ao carregar formulário');
+      return;
+    }
+
+    formConfig = result.data;
+    renderForm();
+  } catch (error) {
+    console.error('Erro:', error);
+    showError('Erro ao conectar com o servidor');
+  }
+}
+
+function showError(message) {
+  document.getElementById('content').innerHTML = `
+    <div class="error-container">
+      <p>❌ ${message}</p>
+    </div>
+  `;
+}
+
+function renderForm() {
+  if (!formConfig) return;
+
+  document.getElementById('formTitle').textContent = formConfig.formName || 'Formulário';
+
+  let formHTML = '';
+  formConfig.questions.forEach((q, idx) => {
+    formHTML += renderQuestion(q, idx);
+  });
+
+  formHTML += `
+    <div class="submit-section">
+      <button class="submit-btn" onclick="submitForm()">Enviar Formulário</button>
+      <div id="statusMessage" class="status-message"></div>
+    </div>
+  `;
+
+  document.getElementById('content').innerHTML = formHTML;
+}
+
+function renderQuestion(question, idx) {
+  const qId = 'q_' + idx;
+  let inputHTML = '';
+
+  const fieldType = question.tipo_campo || 'text';
+  const required = question.required ? '<span class="required">*</span>' : '';
+  const placeholder = question.placeholder || '';
+
+  if (fieldType === 'textarea') {
+    inputHTML = `<textarea id="${qId}" placeholder="${placeholder}"></textarea>`;
+  } else if (fieldType === 'file') {
+    inputHTML = `
+      <div class="file-upload" onclick="document.getElementById('${qId}').click()">
+        <input type="file" id="${qId}" multiple accept="*/*" onchange="handleFileUpload(${idx}, event)">
+        <div class="file-upload-hint">
+          📁 Clique ou arraste até 5 arquivos (qualquer formato)
+        </div>
+      </div>
+      <div class="files-list" id="files_${idx}"></div>
+    `;
+  } else {
+    inputHTML = `<input type="${fieldType}" id="${qId}" placeholder="${placeholder}">`;
+  }
+
+  return `
+    <div class="form-group">
+      <label for="${qId}">${question.pergunta}${required}</label>
+      ${inputHTML}
+    </div>
+  `;
+}
+
+function handleFileUpload(idx, event) {
+  const files = Array.from(event.target.files);
+  if (!fileData['q_' + idx]) fileData['q_' + idx] = [];
+
+  files.slice(0, 5).forEach(file => {
+    if (fileData['q_' + idx].length < 5) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        fileData['q_' + idx].push({
+          name: file.name,
+          size: file.size,
+          type: file.type,
+          base64: e.target.result
+        });
+        updateFilesList(idx);
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+}
+
+function updateFilesList(idx) {
+  const container = document.getElementById('files_' + idx);
+  if (!container) return;
+
+  container.innerHTML = (fileData['q_' + idx] || []).map((file, fIdx) => `
+    <div class="file-item">
+      <span>${file.name} (${(file.size / 1024).toFixed(1)}KB)</span>
+      <button onclick="removeFile(${idx}, ${fIdx})">✕</button>
+    </div>
+  `).join('');
+}
+
+function removeFile(qIdx, fIdx) {
+  fileData['q_' + qIdx].splice(fIdx, 1);
+  updateFilesList(qIdx);
+}
+
+async function submitForm() {
+  if (!formConfig) return;
+
+  // Coletar dados dos campos
+  formConfig.questions.forEach((q, idx) => {
+    const qId = 'q_' + idx;
+    const input = document.getElementById(qId);
+    if (input && input.tagName !== 'INPUT' || (input && input.type !== 'file')) {
+      formData[qId] = input?.value || '';
+    }
+  });
+
+  const btn = document.querySelector('.submit-btn');
+  btn.disabled = true;
+  btn.textContent = 'Enviando...';
+
+  try {
+    const payload = {
+      action: 'submitForm',
+      form: formId,
+      client: clientId,
+      data: formData,
+      files: fileData
+    };
+
+    const response = await fetch(SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    });
+
+    const result = await response.json();
+
+    if (!result.success) {
+      throw new Error(result.error || 'Erro ao enviar');
+    }
+
+    document.getElementById('statusMessage').textContent = '✅ Formulário enviado com sucesso!';
+    document.getElementById('statusMessage').className = 'status-message success';
+
+    setTimeout(() => {
+      formData = {};
+      fileData = {};
+      renderForm();
+    }, 2000);
+
+  } catch (error) {
+    console.error('Erro:', error);
+    document.getElementById('statusMessage').textContent = '❌ ' + error.message;
+    document.getElementById('statusMessage').className = 'status-message error';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Enviar Formulário';
+  }
+}
+
+// Carregar ao iniciar
+document.addEventListener('DOMContentLoaded', loadFormConfig);
+</script>
+
+</body>
+</html>
